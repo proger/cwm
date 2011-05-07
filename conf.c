@@ -527,6 +527,7 @@ conf_unbind(struct conf *c, struct keybinding *unbind)
 {
 	struct keybinding	*key = NULL, *keynxt;
 
+#define TAILQ_END(head) (*(head)->tqh_last)
 	for (key = TAILQ_FIRST(&c->keybindingq);
 	    key != TAILQ_END(&c->keybindingq); key = keynxt) {
 		keynxt = TAILQ_NEXT(key, entry);
@@ -585,7 +586,7 @@ conf_mousebind(struct conf *c, char *name, char *binding)
 	} else
 		substring = name;
 
-	current_binding->button = strtonum(substring, 1, 3, &errstr);
+	current_binding->button = atol(substring);
 	if (errstr)
 		warnx("number of buttons is %s: %s", errstr, substring);
 
