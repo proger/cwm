@@ -159,7 +159,9 @@ kbfunc_client_search(struct client_ctx *cc, union arg *arg)
 			client_unhide(cc);
 		if (old_cc)
 			client_ptrsave(old_cc);
-		if ((mi->flags == 0 && Conf.flags & CONF_SWITCHTO_GROUPS) || mi->flags == 1)
+		if (cc->group
+		    && ((mi->flags == 0 && Conf.flags & CONF_SWITCHTO_GROUPS)
+		    || mi->flags == 1))
 			group_only(cc->sc, cc->group->shortcut - 1);
 
 		client_ptrwarp(cc);
