@@ -69,7 +69,7 @@ typedef struct {
 
 %token	FONTNAME STICKY GAP MOUSEBIND
 %token	AUTOGROUP BIND COMMAND IGNORE
-%token	YES NO BORDERWIDTH MOVEAMOUNT
+%token	YES NO BORDERWIDTH MOVEAMOUNT SWITCHTOGROUPS
 %token	COLOR
 %token	ACTIVEBORDER INACTIVEBORDER
 %token	GROUPBORDER UNGROUPBORDER
@@ -113,6 +113,12 @@ main		: FONTNAME STRING		{
 				conf->flags &= ~CONF_STICKY_GROUPS;
 			else
 				conf->flags |= CONF_STICKY_GROUPS;
+		}
+		| SWITCHTOGROUPS yesno {
+			if ($2 == 0)
+				conf->flags &= ~CONF_SWITCHTO_GROUPS;
+			else
+				conf->flags |= CONF_SWITCHTO_GROUPS;
 		}
 		| BORDERWIDTH NUMBER {
 			conf->bwidth = $2;
@@ -229,6 +235,7 @@ lookup(char *s)
 		{ "moveamount",		MOVEAMOUNT},
 		{ "no",			NO},
 		{ "sticky",		STICKY},
+		{ "switchtogroups",	SWITCHTOGROUPS},
 		{ "ungroupborder",	UNGROUPBORDER},
 		{ "yes",		YES}
 	};

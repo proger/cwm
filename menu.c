@@ -32,7 +32,7 @@
 
 enum ctltype {
 	CTL_NONE = -1,
-	CTL_ERASEONE = 0, CTL_WIPE, CTL_UP, CTL_DOWN, CTL_RETURN,
+	CTL_ERASEONE = 0, CTL_WIPE, CTL_UP, CTL_DOWN, CTL_RETURN, CTL_EXRETURN,
 	CTL_ABORT, CTL_ALL
 };
 
@@ -228,6 +228,7 @@ menu_handle_key(XEvent *e, struct menu_ctx *mc, struct menu_q *menuq,
 		TAILQ_REMOVE(resultq, mi, resultentry);
 		TAILQ_INSERT_TAIL(resultq, mi, resultentry);
 		break;
+	case CTL_EXRETURN:
 	case CTL_RETURN:
 		/*
 		 * Return whatever the cursor is currently on. Else
@@ -239,6 +240,7 @@ menu_handle_key(XEvent *e, struct menu_ctx *mc, struct menu_q *menuq,
 			    mc->searchstr, sizeof(mi->text));
 			mi->dummy = 1;
 		}
+		mi->flags = ctl == CTL_EXRETURN;
 		mi->abort = 0;
 		return (mi);
 	case CTL_WIPE:
@@ -465,7 +467,7 @@ menu_keycode(KeyCode kc, u_int state, enum ctltype *ctl, char *chr)
 		*ctl = CTL_ERASEONE;
 		break;
 	case XK_Return:
-		*ctl = CTL_RETURN;
+		*ctl = (state & ControlMask) ? CTL_EXRETURN : CTL_RETURN;
 		break;
 	case XK_Up:
 		*ctl = CTL_UP;
