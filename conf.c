@@ -15,7 +15,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: conf.c,v 1.77 2011/03/22 10:57:31 okan Exp $
+ * $OpenBSD: conf.c,v 1.79 2011/05/11 13:53:51 okan Exp $
  */
 
 #include <sys/param.h>
@@ -138,6 +138,7 @@ static struct {
 	{ "CM-f",	"maximize" },
 	{ "CM-equal",	"vmaximize" },
 	{ "CMS-equal",	"hmaximize" },
+	{ "CMS-f",	"freeze" },
 	{ "CMS-r",	"reload" },
 	{ "CMS-q",	"quit" },
 	{ "M-h",	"moveleft" },
@@ -361,6 +362,7 @@ static struct {
 	{ "maximize", kbfunc_client_maximize, KBFLAG_NEEDCLIENT, {0} },
 	{ "vmaximize", kbfunc_client_vmaximize, KBFLAG_NEEDCLIENT, {0} },
 	{ "hmaximize", kbfunc_client_hmaximize, KBFLAG_NEEDCLIENT, {0} },
+	{ "freeze", kbfunc_client_freeze, KBFLAG_NEEDCLIENT, {0} },
 	{ "reload", kbfunc_reload, 0, {0} },
 	{ "quit", kbfunc_quit_wm, 0, {0} },
 	{ "exec", kbfunc_exec, 0, {.i = CWM_EXEC_PROGRAM} },
@@ -527,7 +529,6 @@ conf_unbind(struct conf *c, struct keybinding *unbind)
 {
 	struct keybinding	*key = NULL, *keynxt;
 
-#define TAILQ_END(head) (*(head)->tqh_last)
 	for (key = TAILQ_FIRST(&c->keybindingq);
 	    key != TAILQ_END(&c->keybindingq); key = keynxt) {
 		keynxt = TAILQ_NEXT(key, entry);
@@ -586,7 +587,7 @@ conf_mousebind(struct conf *c, char *name, char *binding)
 	} else
 		substring = name;
 
-	current_binding->button = atol(substring);
+	current_binding->button = strtonum(substring, 1, 3, &errstr);
 	if (errstr)
 		warnx("number of buttons is %s: %s", errstr, substring);
 

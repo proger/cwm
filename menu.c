@@ -1,4 +1,6 @@
 /*
+ * calmwm - the calm window manager
+ *
  * Copyright (c) 2008 Owain G. Ainsworth <oga@openbsd.org>
  * Copyright (c) 2004 Marius Aamodt Eriksen <marius@monkey.org>
  *
@@ -13,6 +15,8 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *
+ * $OpenBSD: menu.c,v 1.27 2011/05/11 13:53:51 okan Exp $
  */
 
 #include <sys/param.h>
@@ -32,7 +36,7 @@
 
 enum ctltype {
 	CTL_NONE = -1,
-	CTL_ERASEONE = 0, CTL_WIPE, CTL_UP, CTL_DOWN, CTL_RETURN, CTL_EXRETURN,
+	CTL_ERASEONE = 0, CTL_WIPE, CTL_UP, CTL_DOWN, CTL_RETURN,
 	CTL_ABORT, CTL_ALL
 };
 
@@ -228,7 +232,6 @@ menu_handle_key(XEvent *e, struct menu_ctx *mc, struct menu_q *menuq,
 		TAILQ_REMOVE(resultq, mi, resultentry);
 		TAILQ_INSERT_TAIL(resultq, mi, resultentry);
 		break;
-	case CTL_EXRETURN:
 	case CTL_RETURN:
 		/*
 		 * Return whatever the cursor is currently on. Else
@@ -240,7 +243,6 @@ menu_handle_key(XEvent *e, struct menu_ctx *mc, struct menu_q *menuq,
 			    mc->searchstr, sizeof(mi->text));
 			mi->dummy = 1;
 		}
-		mi->flags = ctl == CTL_EXRETURN;
 		mi->abort = 0;
 		return (mi);
 	case CTL_WIPE:
@@ -467,7 +469,7 @@ menu_keycode(KeyCode kc, u_int state, enum ctltype *ctl, char *chr)
 		*ctl = CTL_ERASEONE;
 		break;
 	case XK_Return:
-		*ctl = (state & ControlMask) ? CTL_EXRETURN : CTL_RETURN;
+		*ctl = CTL_RETURN;
 		break;
 	case XK_Up:
 		*ctl = CTL_UP;
