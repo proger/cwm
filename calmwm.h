@@ -15,7 +15,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: calmwm.h,v 1.123 2011/05/05 16:40:37 okan Exp $
+ * $OpenBSD: calmwm.h,v 1.126 2011/05/15 17:58:47 okan Exp $
  */
 
 #ifndef _CALMWM_H_
@@ -68,12 +68,12 @@
 #define	CWM_EXEC_WM		0x0002
 
 /* client cycle */
-#define CWM_CYCLE		0x0001
-#define CWM_RCYCLE		0x0002
+#define CWM_CYCLE		0
+#define CWM_RCYCLE		1
 
 /* group cycle */
-#define CWM_CYCLEGROUP		0x0001
-#define CWM_RCYCLEGROUP		0x0002
+#define CWM_CYCLEGROUP		0
+#define CWM_RCYCLEGROUP		1
 
 #define KBTOGROUP(X) ((X) - 1)
 
@@ -150,6 +150,7 @@ struct client_ctx {
 #define CLIENT_VMAXIMIZED		0x0020
 #define CLIENT_DOHMAXIMIZE		0x0040
 #define CLIENT_HMAXIMIZED		0x0080
+#define CLIENT_FREEZE			0x0100
 	int			 flags;
 	int			 state;
 	int			 active;
@@ -264,7 +265,6 @@ struct menu {
 	void			*ctx;
 	short			 dummy;
 	short			 abort;
-	int			 flags;
 };
 TAILQ_HEAD(menu_q, menu);
 
@@ -276,7 +276,6 @@ struct conf {
 	struct cmd_q		 cmdq;
 	struct mousebinding_q	 mousebindingq;
 #define	CONF_STICKY_GROUPS		0x0001
-#define	CONF_SWITCHTO_GROUPS		0x0002
 	int			 flags;
 #define CONF_BWIDTH			1
 	int			 bwidth;
@@ -316,6 +315,7 @@ struct client_ctx	*client_cycle(struct screen_ctx *, int);
 int			 client_delete(struct client_ctx *);
 void			 client_draw_border(struct client_ctx *);
 struct client_ctx	*client_find(Window);
+void			 client_freeze(struct client_ctx *);
 void			 client_getsizehints(struct client_ctx *);
 void			 client_hide(struct client_ctx *);
 void			 client_horizmaximize(struct client_ctx *);
@@ -370,6 +370,7 @@ void			 kbfunc_client_cycle(struct client_ctx *, union arg *);
 void			 kbfunc_client_cyclegroup(struct client_ctx *,
 			     union arg *);
 void			 kbfunc_client_delete(struct client_ctx *, union arg *);
+void			 kbfunc_client_freeze(struct client_ctx *, union arg *);
 void			 kbfunc_client_group(struct client_ctx *, union arg *);
 void			 kbfunc_client_grouponly(struct client_ctx *,
 			     union arg *);
