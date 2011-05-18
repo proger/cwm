@@ -160,12 +160,15 @@ kbfunc_client_search(struct client_ctx *cc, union arg *arg)
 		cc = (struct client_ctx *)mi->ctx;
 		if (cc->flags & CLIENT_HIDDEN)
 			client_unhide(cc);
-
 		if (old_cc)
 			client_ptrsave(old_cc);
+		if (cc->group
+		    && ((mi->flags == 0 && Conf.flags & CONF_SWITCHTO_GROUPS)
+		    || mi->flags == 1))
+			group_only(cc->sc, cc->group->shortcut - 1);
+
 		client_ptrwarp(cc);
 	}
-
 	while ((mi = TAILQ_FIRST(&menuq)) != NULL) {
 		TAILQ_REMOVE(&menuq, mi, entry);
 		xfree(mi);

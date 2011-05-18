@@ -265,6 +265,7 @@ struct menu {
 	void			*ctx;
 	short			 dummy;
 	short			 abort;
+	int			 flags;
 };
 TAILQ_HEAD(menu_q, menu);
 
@@ -276,6 +277,7 @@ struct conf {
 	struct cmd_q		 cmdq;
 	struct mousebinding_q	 mousebindingq;
 #define	CONF_STICKY_GROUPS		0x0001
+#define	CONF_SWITCHTO_GROUPS		0x0002
 	int			 flags;
 #define CONF_BWIDTH			1
 	int			 bwidth;
