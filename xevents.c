@@ -410,7 +410,7 @@ xev_handle_expose(XEvent *ee)
 		client_draw_border(cc);
 }
 
-volatile sig_atomic_t	_xev_quit = 0;
+volatile int	_xev_quit = 0;
 
 void
 xev_loop(void)

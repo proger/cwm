@@ -309,7 +309,7 @@ struct mwm_hints {
 #define	MWM_DECOR_ALL		(1<<0)
 #define	MWM_DECOR_BORDER	(1<<1)
 
-__dead void		 usage(void);
+void		 usage(void);
 
 void			 client_applysizehints(struct client_ctx *);
 struct client_ctx	*client_current(void);

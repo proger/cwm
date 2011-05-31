@@ -2,9 +2,9 @@ PROG=		cwm
 
 SRCS=		calmwm.c screen.c xmalloc.c client.c menu.c \
 		search.c util.c xutil.c conf.c xevents.c group.c \
-		kbfunc.c mousefunc.c font.c parse.y
+		kbfunc.c mousefunc.c font.c parse.y strlcpy.c strlcat.c fgetln.c
 
-CPPFLAGS=	-I/usr/X11R7/include -I/usr/X11R7/include/freetype2 -I${.CURDIR}
+CPPFLAGS=	-I/usr/include -I/usr/include/freetype2 -I${.CURDIR}
 
 NOGCCERROR=
 CFLAGS=		-g -Wall
@@ -17,6 +17,6 @@ MAN=		cwm.1 cwmrc.5
 
 CLEANFILES=	cwm.cat1 cwmrc.cat5
 
-.include <bsd.obj.mk>
-.include <bsd.prog.mk>
-.include <bsd.x11.mk>
+#.include <bsd.obj.mk>
+.include <prog.mk>
+#.include <bsd.x11.mk>
