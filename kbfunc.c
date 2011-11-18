@@ -20,6 +20,7 @@
 
 #include <sys/param.h>
 #include <sys/queue.h>
+#include <sys/types.h>
 
 #include <dirent.h>
 #include <err.h>
@@ -284,9 +285,11 @@ kbfunc_exec(struct client_ctx *cc, union arg *arg)
 			continue;
 
 		while ((dp = readdir(dirp)) != NULL) {
+#ifndef __sun
 			/* skip everything but regular files and symlinks */
 			if (dp->d_type != DT_REG && dp->d_type != DT_LNK)
 				continue;
+#endif
 			memset(tpath, '\0', sizeof(tpath));
 			l = snprintf(tpath, sizeof(tpath), "%s/%s", paths[i],
 			    dp->d_name);
@@ -329,6 +332,8 @@ out:
 	}
 }
 
+extern char *fgetln(FILE *, size_t *);
+
 void
 kbfunc_ssh(struct client_ctx *cc, union arg *arg)
 {
@@ -337,6 +342,9 @@ kbfunc_ssh(struct client_ctx *cc, union arg *arg)
 	struct menu_q		 menuq;
 	FILE			*fp;
 	char			*buf, *lbuf, *p, *home;
+#ifndef MAXHOSTNAMELEN
+#define MAXHOSTNAMELEN MAXPATHLEN
+#endif
 	char			 hostbuf[MAXHOSTNAMELEN], filename[MAXPATHLEN];
 	char			 cmd[256];
 	int			 l;
